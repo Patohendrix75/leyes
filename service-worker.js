@@ -9,7 +9,9 @@ const FILES_TO_CACHE = [
   '/documento3.html',
   '/documento4.html',
   '/documento5.html',
-  '/documento6.html'
+  '/documento6.html',
+  '/documento7.html',
+  '/documento8.html'
 ];
 
 // Instala y guarda archivos en caché
