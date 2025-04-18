@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Biblioteca Jurídica – ANF</title>
 
-  <!-- Librerías -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
@@ -19,7 +18,6 @@
       --radius: 12px;
       --shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
     }
-
     body {
       font-family: 'Inter', sans-serif;
       margin: 0;
@@ -28,7 +26,6 @@
       flex-direction: column;
       background: var(--bg);
     }
-
     header {
       background: var(--primary);
       color: #fff;
@@ -36,30 +33,25 @@
       display: flex;
       align-items: center;
       gap: 1rem;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      flex-wrap: wrap;
     }
-
     #banner {
       height: 42px;
       width: auto;
       object-fit: contain;
       flex-shrink: 0;
     }
-
     h1 {
       margin: 0;
       font-size: 1.25rem;
       font-weight: 600;
-      flex-shrink: 0;
     }
-
     #toolbar {
       display: none;
       gap: 0.5rem;
       align-items: center;
       flex: 1;
     }
-
     #toolbar button {
       background: #fff;
       border: none;
@@ -68,15 +60,12 @@
       box-shadow: var(--shadow);
       font-size: 1rem;
       padding: 0.35rem 0.6rem;
-      flex-shrink: 0;
       color: var(--primary);
     }
-
     #toolbar button:hover {
       background: var(--accent-red);
       color: #fff;
     }
-
     #search {
       flex: 1;
       border: none;
@@ -85,7 +74,6 @@
       box-shadow: var(--shadow);
     }
 
-    /* ===== Galería ===== */
     #docList {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -94,7 +82,6 @@
       overflow-y: auto;
       flex: 1;
     }
-
     .doc-item {
       aspect-ratio: 3/4;
       background: #fff;
@@ -108,19 +95,16 @@
       cursor: pointer;
       transition: 0.15s;
     }
-
     .doc-item:hover {
       transform: translateY(-4px);
       box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
       border: 2px solid var(--accent-red);
     }
-
     .doc-icon {
       font-size: 40px;
       margin-bottom: 0.5rem;
       color: var(--primary);
     }
-
     .doc-title {
       text-align: center;
       font-weight: 600;
@@ -137,45 +121,29 @@
       display: none;
     }
 
-    #viewer .content-wrapper,
-    [data-viewer-content] * {
-      font-size: inherit !important;
-    }
-
     .highlight {
       background: #ffe169;
       color: #000;
     }
 
     @media (max-width: 480px) {
-      header {
-        flex-wrap: wrap;
-        padding: 0.5rem;
+      #banner {
+        display: none;
       }
       h1 {
         font-size: 1.1rem;
       }
       #toolbar {
         width: 100%;
-        gap: 0.4rem;
         margin-top: 0.4rem;
       }
-      #toolbar button {
-        padding: 0.3rem 0.55rem;
-      }
-      #search {
-        flex: 1;
-      }
-
       #docList {
         grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
         gap: 0.75rem;
       }
-
       .doc-icon {
         font-size: 32px;
       }
-
       .doc-title {
         font-size: 0.85rem;
       }
@@ -187,11 +155,11 @@
     <img id="banner" src="banner.jpg" alt="Banner ANF" />
     <h1>Biblioteca Jurídica</h1>
     <div id="toolbar">
-      <button id="btn-home" title="Inicio"><i class="fa-solid fa-house"></i></button>
+      <button id="btn-home"><i class="fa-solid fa-house"></i></button>
       <input id="search" placeholder="Buscar…" />
-      <button id="btn-search" title="Buscar / siguiente"><i class="fa-solid fa-magnifying-glass"></i></button>
-      <button id="btn-font-decrease" title="Reducir fuente">A‑</button>
-      <button id="btn-font-increase" title="Aumentar fuente">A+</button>
+      <button id="btn-search"><i class="fa-solid fa-magnifying-glass"></i></button>
+      <button id="btn-font-decrease">A‑</button>
+      <button id="btn-font-increase">A+</button>
     </div>
   </header>
 
@@ -205,27 +173,22 @@
       { file: 'documento3.html', title: 'LEY DE DROGAS' },
       { file: 'documento4.html', title: 'LEY DE CONTROL DE ARMAS' }
     ];
-    const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent-red');
-    const palette = [accent, '#1f71ff', '#00bfa6', '#9c4dff', '#ffcf3f'];
-    let currentDoc = null;
 
     function buildDocList() {
       const list = document.getElementById('docList');
       list.innerHTML = '';
-      docs.forEach((doc, i) => {
+      docs.forEach(doc => {
         const card = document.createElement('div');
         card.className = 'doc-item';
-        card.style.setProperty('--accent', palette[i % palette.length]);
-        card.innerHTML = `<div class="doc-icon"><i class="fa-solid fa-file-lines"></i></div>
-                          <div class="doc-title">${doc.title}</div>`;
-        card.onclick = () => openDoc(i);
+        card.innerHTML = `
+          <div class="doc-icon"><i class="fa-solid fa-file-lines"></i></div>
+          <div class="doc-title">${doc.title}</div>`;
+        card.onclick = () => openDoc(doc.file);
         list.appendChild(card);
       });
     }
 
-    async function loadDocument(i) {
-      currentDoc = i;
-      const { file } = docs[i];
+    async function loadDocument(file) {
       const res = await fetch('docs/' + file);
       if (!res.ok) {
         alert('Error ' + res.status);
@@ -235,12 +198,12 @@
       const viewer = document.getElementById('viewer');
       let html;
       if (file.endsWith('.md')) {
-        html = `<div class="content-wrapper" data-viewer-content="true">${marked.parse(txt)}</div>`;
+        html = `<div>${marked.parse(txt)}</div>`;
       } else {
         const p = new DOMParser();
         const docHtml = p.parseFromString(txt, 'text/html');
         docHtml.head.querySelectorAll('style,link').forEach(e => e.remove());
-        html = `<div class="content-wrapper" data-viewer-content="true">${docHtml.body.innerHTML}</div>`;
+        html = `<div>${docHtml.body.innerHTML}</div>`;
       }
       viewer.innerHTML = html;
       viewer.dataset.original = viewer.innerHTML;
@@ -249,18 +212,18 @@
       resetSearch();
     }
 
-    const openDoc = i => {
+    function openDoc(file) {
       document.getElementById('docList').style.display = 'none';
       document.getElementById('viewer').style.display = 'block';
       document.getElementById('toolbar').style.display = 'flex';
-      loadDocument(i);
-    };
+      loadDocument(file);
+    }
 
-    const goHome = () => {
+    function goHome() {
       document.getElementById('viewer').style.display = 'none';
       document.getElementById('toolbar').style.display = 'none';
       document.getElementById('docList').style.display = 'grid';
-    };
+    }
 
     let highlights = [], currentHit = -1, lastTerm = '';
     const searchInput = document.getElementById('search');
@@ -298,17 +261,11 @@
     function doSearch() {
       const term = searchInput.value.trim();
       const viewer = document.getElementById('viewer');
-      if (!term) {
-        resetSearch();
-        return;
-      }
-      if (term === lastTerm && highlights.length) {
-        scrollToHit(currentHit + 1);
-        return;
-      }
+      if (!term) return resetSearch();
+      if (term === lastTerm && highlights.length) return scrollToHit(currentHit + 1);
       lastTerm = term;
       viewer.innerHTML = viewer.dataset.original;
-      highlightTerm(viewer.querySelector('[data-viewer-content]'), term);
+      highlightTerm(viewer, term);
       highlights = [...viewer.querySelectorAll('.highlight')];
       scrollToHit(0);
     }
@@ -331,6 +288,11 @@
 
     goHome();
     buildDocList();
+
+    // 📦 Registrar Service Worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js');
+    }
   </script>
 </body>
 </html>
