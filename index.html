@@ -2,25 +2,14 @@
 
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Biblioteca Jurídica – ANF</title>
-  
-  <!-- Iconos -->
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
-  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="theme-color" content="#1f334d" />
-
-  <!-- CDNs y estilos -->
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-
-  <!-- Estilos locales -->
-  <style>
+<meta charset="utf-8"/><link href="favicon.ico" rel="icon" type="image/x-icon"/><link href="apple-touch-icon.png" rel="apple-touch-icon"/><meta content="yes" name="apple-mobile-web-app-capable"/><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/><meta content="#1f334d" name="theme-color"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Biblioteca Jurídica – ANF</title>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+<style>
     :root {
       --primary: #1f334d;
       --accent-red: #c62828;
@@ -158,7 +147,48 @@
         font-size: 0.85rem;
       }
     }
-  </style>
+  
+
+/* 🌙 Modo oscuro automático */
+@media (prefers-color-scheme: dark) {
+  body { background: #121212; color: #f0f0f0; }
+  header { background: #1f1f1f; color: #fff; }
+  .doc-item { background: #1e1e1e; color: #fff; }
+  .doc-title { color: #fff; }
+  #viewer { background: #1e1e1e; color: #fff; }
+}
+
+/* 📱 Ajustes móviles adicionales */
+@media (max-width: 480px) {
+  header {
+    justify-content: center;
+    text-align: center;
+  }
+  h1 {
+    flex: 1;
+    text-align: center;
+  }
+  #banner {
+    display: none;
+  }
+  #toolbar {
+    margin-top: 0.25rem;
+  }
+  .doc-item {
+    padding: 0.5rem;
+    font-size: 0.85rem;
+  }
+  .doc-title {
+    font-size: 0.8rem;
+  }
+}
+
+/* ✨ Feedback visual en clic */
+.doc-item:active {
+  transform: scale(0.97);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+</style>
 </head>
 <body>
 <header>
@@ -193,7 +223,7 @@
         const card = document.createElement('div');
         card.className = 'doc-item';
         card.innerHTML = `
-          <div class="doc-icon"><i class="fa-solid fa-file-lines"></i></div>
+          <div class="doc-icon"><i class="fa-solid fa-book"></i></div>
           <div class="doc-title">${doc.title}</div>`;
         card.onclick = () => openDoc(doc.file);
         list.appendChild(card);
