@@ -1,186 +1,336 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Biblioteca Jurídica – ANF</title>
 
   <!-- Librerías -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <link  rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
-  <link  rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
   <style>
-    /* ===== Paleta institucional ===== */
-    :root{
-      --primary:#1f334d;          /* azul marino ANF */
-      --accent-red:#c62828;       /* rojo ANF */
-      --bg:#e9edf1;               /* gris de fondo */
-      --radius:12px;
-      --shadow:0 2px 6px rgba(0,0,0,.15);
+    :root {
+      --primary: #1f334d;
+      --accent-red: #c62828;
+      --bg: #e9edf1;
+      --radius: 12px;
+      --shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
     }
 
-    /* ===== Layout ===== */
-    body{font-family:'Inter',sans-serif;margin:0;height:100vh;display:flex;flex-direction:column;background:var(--bg);}
-    header{background:var(--primary);color:#fff;padding:.75rem 1rem;display:flex;align-items:center;gap:1rem;box-shadow:0 2px 8px rgba(0,0,0,.2);}
-    h1{margin:0;font-size:1.25rem;font-weight:600;flex-shrink:0;}
-
-    /* ===== Toolbar ===== */
-    #toolbar{display:none;gap:.5rem;align-items:center;flex:1;}
-    #toolbar button{
-      background:#fff;border:none;border-radius:6px;cursor:pointer;
-      box-shadow:var(--shadow);font-size:1rem;padding:.35rem .6rem;flex-shrink:0;color:var(--primary);
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg);
     }
-    #toolbar button:hover{background:var(--accent-red);color:#fff;}
-    #search{flex:1;border:none;border-radius:6px;padding:.35rem .8rem;box-shadow:var(--shadow);}
+
+    header {
+      background: var(--primary);
+      color: #fff;
+      padding: 0.75rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    #banner {
+      height: 42px;
+      width: auto;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    #toolbar {
+      display: none;
+      gap: 0.5rem;
+      align-items: center;
+      flex: 1;
+    }
+
+    #toolbar button {
+      background: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      font-size: 1rem;
+      padding: 0.35rem 0.6rem;
+      flex-shrink: 0;
+      color: var(--primary);
+    }
+
+    #toolbar button:hover {
+      background: var(--accent-red);
+      color: #fff;
+    }
+
+    #search {
+      flex: 1;
+      border: none;
+      border-radius: 6px;
+      padding: 0.35rem 0.8rem;
+      box-shadow: var(--shadow);
+    }
 
     /* ===== Galería ===== */
-    #docList{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem;padding:2rem;overflow-y:auto;flex:1;}
-    .doc-item{aspect-ratio:3/4;background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);
-      display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1rem;cursor:pointer;transition:.15s;}
-    .doc-item:hover{transform:translateY(-4px);box-shadow:0 6px 14px rgba(0,0,0,.25);border:2px solid var(--accent-red);}
-    .doc-icon{font-size:48px;margin-bottom:.75rem;color:var(--primary);}
-    .doc-title{text-align:center;font-weight:600;font-size:1.05rem;line-height:1.3em;color:var(--primary);}
+    #docList {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 1rem;
+      padding: 1.25rem;
+      overflow-y: auto;
+      flex: 1;
+    }
 
-    /* ===== Visor ===== */
-    #viewer{padding:2rem;overflow-y:auto;flex:1;background:#fff;display:none;}
-    #viewer .content-wrapper,[data-viewer-content] *{font-size:inherit!important;}
-    .highlight{background:#ffe169;color:#000;}
+    .doc-item {
+      aspect-ratio: 3/4;
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem;
+      cursor: pointer;
+      transition: 0.15s;
+    }
 
-    /* ===== Responsive ≤480 px ===== */
-    @media (max-width:480px){
-      header{flex-wrap:wrap;padding:.5rem;}
-      h1{font-size:1.1rem;}
-      #toolbar{width:100%;gap:.4rem;margin-top:.4rem;}
-      #toolbar button{padding:.3rem .55rem;}
-      #search{flex:1;}
+    .doc-item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
+      border: 2px solid var(--accent-red);
+    }
+
+    .doc-icon {
+      font-size: 40px;
+      margin-bottom: 0.5rem;
+      color: var(--primary);
+    }
+
+    .doc-title {
+      text-align: center;
+      font-weight: 600;
+      font-size: 0.95rem;
+      line-height: 1.3em;
+      color: var(--primary);
+    }
+
+    #viewer {
+      padding: 2rem;
+      overflow-y: auto;
+      flex: 1;
+      background: #fff;
+      display: none;
+    }
+
+    #viewer .content-wrapper,
+    [data-viewer-content] * {
+      font-size: inherit !important;
+    }
+
+    .highlight {
+      background: #ffe169;
+      color: #000;
+    }
+
+    @media (max-width: 480px) {
+      header {
+        flex-wrap: wrap;
+        padding: 0.5rem;
+      }
+      h1 {
+        font-size: 1.1rem;
+      }
+      #toolbar {
+        width: 100%;
+        gap: 0.4rem;
+        margin-top: 0.4rem;
+      }
+      #toolbar button {
+        padding: 0.3rem 0.55rem;
+      }
+      #search {
+        flex: 1;
+      }
+
+      #docList {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 0.75rem;
+      }
+
+      .doc-icon {
+        font-size: 32px;
+      }
+
+      .doc-title {
+        font-size: 0.85rem;
+      }
     }
   </style>
 </head>
 <body>
-  <!-- ===== Encabezado ===== -->
   <header>
+    <img id="banner" src="banner.jpg" alt="Banner ANF" />
     <h1>Biblioteca Jurídica</h1>
     <div id="toolbar">
-      <button id="btn-home"   title="Inicio"><i class="fa-solid fa-house"></i></button>
-      <input  id="search"     placeholder="Buscar…">
+      <button id="btn-home" title="Inicio"><i class="fa-solid fa-house"></i></button>
+      <input id="search" placeholder="Buscar…" />
       <button id="btn-search" title="Buscar / siguiente"><i class="fa-solid fa-magnifying-glass"></i></button>
       <button id="btn-font-decrease" title="Reducir fuente">A‑</button>
       <button id="btn-font-increase" title="Aumentar fuente">A+</button>
     </div>
   </header>
 
-  <!-- ===== Galería y visor ===== -->
   <div id="docList"></div>
   <div id="viewer"></div>
 
   <script>
-  /* ---------- Configuración ---------- */
-  const docs=[
-    {file:'documento1.html',title:'CÓDIGO PENAL'},
-    {file:'documento2.html',title:'CODIGO PROCESAL PENAL'},
-    {file:'documento3.html',title:'LEY DE DROGAS'},
-    {file:'documento4.html',title:'LEY DE CONTROL DE ARMAS'}
-  ];
-  const accent= getComputedStyle(document.documentElement).getPropertyValue('--accent-red');
-  const palette=[accent,'#1f71ff','#00bfa6','#9c4dff','#ffcf3f'];
+    const docs = [
+      { file: 'documento1.html', title: 'CÓDIGO PENAL' },
+      { file: 'documento2.html', title: 'CÓDIGO PROCESAL PENAL' },
+      { file: 'documento3.html', title: 'LEY DE DROGAS' },
+      { file: 'documento4.html', title: 'LEY DE CONTROL DE ARMAS' }
+    ];
+    const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent-red');
+    const palette = [accent, '#1f71ff', '#00bfa6', '#9c4dff', '#ffcf3f'];
+    let currentDoc = null;
 
-  let currentDoc=null;
-
-  /* ---------- Construir galería ---------- */
-  function buildDocList(){
-    const list=document.getElementById('docList'); list.innerHTML='';
-    docs.forEach((doc,i)=>{
-      const card=document.createElement('div'); card.className='doc-item';
-      card.style.setProperty('--accent',palette[i%palette.length]);
-      card.innerHTML=`<div class="doc-icon"><i class="fa-solid fa-file-lines"></i></div>
-                      <div class="doc-title">${doc.title}</div>`;
-      card.onclick=()=>openDoc(i);
-      list.appendChild(card);
-    });
-  }
-
-  /* ---------- Cargar documento ---------- */
-  async function loadDocument(i){
-    currentDoc=i; const {file}=docs[i];
-    const res=await fetch('docs/'+file);
-    if(!res.ok){alert('Error '+res.status);return;}
-    const txt=await res.text(); const viewer=document.getElementById('viewer');
-    let html;
-    if(file.endsWith('.md')){
-      html=`<div class="content-wrapper" data-viewer-content="true">${marked.parse(txt)}</div>`;
-    }else{
-      const p=new DOMParser();const docHtml=p.parseFromString(txt,'text/html');
-      docHtml.head.querySelectorAll('style,link').forEach(e=>e.remove());
-      html=`<div class="content-wrapper" data-viewer-content="true">${docHtml.body.innerHTML}</div>`;
-    }
-    viewer.innerHTML=html;
-    viewer.dataset.original=viewer.innerHTML;
-    hljs.highlightAll();
-    viewer.style.fontSize=localStorage.getItem('fontSize')||'1rem';
-    resetSearch();
-  }
-
-  /* ---------- Navegación ---------- */
-  const openDoc=i=>{document.getElementById('docList').style.display='none';
-                    document.getElementById('viewer').style.display='block';
-                    document.getElementById('toolbar').style.display='flex';loadDocument(i);};
-  const goHome =()=>{document.getElementById('viewer').style.display='none';
-                     document.getElementById('toolbar').style.display='none';
-                     document.getElementById('docList').style.display='grid';};
-
-  /* ---------- Búsqueda ---------- */
-  let highlights=[],currentHit=-1,lastTerm='';
-  const searchInput=document.getElementById('search');
-  const escapeRx=s=>s.replace(/[-/\\^$*+?.()|[\]{}]/g,'\\$&');
-  function highlightTerm(root,term){
-    const rx=new RegExp(`(${escapeRx(term)})`,'gi');
-    const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
-    const nodes=[];while(walker.nextNode()) nodes.push(walker.currentNode);
-    nodes.forEach(n=>{
-      const val=n.nodeValue;if(!rx.test(val)) return;
-      const frag=document.createDocumentFragment();let last=0;
-      val.replace(rx,(m,_,off)=>{
-        if(off>last) frag.appendChild(document.createTextNode(val.slice(last,off)));
-        const span=document.createElement('span');span.className='highlight';span.textContent=m;
-        frag.appendChild(span);last=off+m.length;
+    function buildDocList() {
+      const list = document.getElementById('docList');
+      list.innerHTML = '';
+      docs.forEach((doc, i) => {
+        const card = document.createElement('div');
+        card.className = 'doc-item';
+        card.style.setProperty('--accent', palette[i % palette.length]);
+        card.innerHTML = `<div class="doc-icon"><i class="fa-solid fa-file-lines"></i></div>
+                          <div class="doc-title">${doc.title}</div>`;
+        card.onclick = () => openDoc(i);
+        list.appendChild(card);
       });
-      if(last<val.length) frag.appendChild(document.createTextNode(val.slice(last)));
-      n.parentNode.replaceChild(frag,n);
-    });
-  }
-  function scrollToHit(idx){
-    if(!highlights.length) return;
-    currentHit=(idx+highlights.length)%highlights.length;
-    highlights[currentHit].scrollIntoView({behavior:'smooth',block:'center'});
-  }
-  function doSearch(){
-    const term=searchInput.value.trim(); const viewer=document.getElementById('viewer');
-    if(!term){resetSearch();return;}
-    if(term===lastTerm && highlights.length){scrollToHit(currentHit+1);return;}
-    lastTerm=term; viewer.innerHTML=viewer.dataset.original;
-    highlightTerm(viewer.querySelector('[data-viewer-content]'),term);
-    highlights=[...viewer.querySelectorAll('.highlight')];
-    scrollToHit(0);
-  }
-  const resetSearch=()=>{highlights=[];currentHit=-1;lastTerm='';};
+    }
 
-  /* ---------- Fuente ---------- */
-  const changeFont=s=>{
-    const v=document.getElementById('viewer');let size=parseFloat(getComputedStyle(v).fontSize);
-    size=Math.max(12,size+s);v.style.fontSize=size+'px';localStorage.setItem('fontSize',v.style.fontSize);
-  };
+    async function loadDocument(i) {
+      currentDoc = i;
+      const { file } = docs[i];
+      const res = await fetch('docs/' + file);
+      if (!res.ok) {
+        alert('Error ' + res.status);
+        return;
+      }
+      const txt = await res.text();
+      const viewer = document.getElementById('viewer');
+      let html;
+      if (file.endsWith('.md')) {
+        html = `<div class="content-wrapper" data-viewer-content="true">${marked.parse(txt)}</div>`;
+      } else {
+        const p = new DOMParser();
+        const docHtml = p.parseFromString(txt, 'text/html');
+        docHtml.head.querySelectorAll('style,link').forEach(e => e.remove());
+        html = `<div class="content-wrapper" data-viewer-content="true">${docHtml.body.innerHTML}</div>`;
+      }
+      viewer.innerHTML = html;
+      viewer.dataset.original = viewer.innerHTML;
+      hljs.highlightAll();
+      viewer.style.fontSize = localStorage.getItem('fontSize') || '1rem';
+      resetSearch();
+    }
 
-  /* ---------- Event listeners ---------- */
-  document.getElementById('btn-home').onclick=goHome;
-  document.getElementById('btn-search').onclick=doSearch;
-  searchInput.addEventListener('keydown',e=>{if(e.key==='Enter')doSearch();});
-  document.getElementById('btn-font-increase').onclick=()=>changeFont(2);
-  document.getElementById('btn-font-decrease').onclick=()=>changeFont(-2);
+    const openDoc = i => {
+      document.getElementById('docList').style.display = 'none';
+      document.getElementById('viewer').style.display = 'block';
+      document.getElementById('toolbar').style.display = 'flex';
+      loadDocument(i);
+    };
 
-  /* ---------- Init ---------- */
-  goHome();buildDocList();
+    const goHome = () => {
+      document.getElementById('viewer').style.display = 'none';
+      document.getElementById('toolbar').style.display = 'none';
+      document.getElementById('docList').style.display = 'grid';
+    };
+
+    let highlights = [], currentHit = -1, lastTerm = '';
+    const searchInput = document.getElementById('search');
+    const escapeRx = s => s.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
+
+    function highlightTerm(root, term) {
+      const rx = new RegExp(`(${escapeRx(term)})`, 'gi');
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+      const nodes = [];
+      while (walker.nextNode()) nodes.push(walker.currentNode);
+      nodes.forEach(n => {
+        const val = n.nodeValue;
+        if (!rx.test(val)) return;
+        const frag = document.createDocumentFragment();
+        let last = 0;
+        val.replace(rx, (m, _, off) => {
+          if (off > last) frag.appendChild(document.createTextNode(val.slice(last, off)));
+          const span = document.createElement('span');
+          span.className = 'highlight';
+          span.textContent = m;
+          frag.appendChild(span);
+          last = off + m.length;
+        });
+        if (last < val.length) frag.appendChild(document.createTextNode(val.slice(last)));
+        n.parentNode.replaceChild(frag, n);
+      });
+    }
+
+    function scrollToHit(idx) {
+      if (!highlights.length) return;
+      currentHit = (idx + highlights.length) % highlights.length;
+      highlights[currentHit].scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function doSearch() {
+      const term = searchInput.value.trim();
+      const viewer = document.getElementById('viewer');
+      if (!term) {
+        resetSearch();
+        return;
+      }
+      if (term === lastTerm && highlights.length) {
+        scrollToHit(currentHit + 1);
+        return;
+      }
+      lastTerm = term;
+      viewer.innerHTML = viewer.dataset.original;
+      highlightTerm(viewer.querySelector('[data-viewer-content]'), term);
+      highlights = [...viewer.querySelectorAll('.highlight')];
+      scrollToHit(0);
+    }
+
+    const resetSearch = () => { highlights = []; currentHit = -1; lastTerm = ''; };
+
+    const changeFont = s => {
+      const v = document.getElementById('viewer');
+      let size = parseFloat(getComputedStyle(v).fontSize);
+      size = Math.max(12, size + s);
+      v.style.fontSize = size + 'px';
+      localStorage.setItem('fontSize', v.style.fontSize);
+    };
+
+    document.getElementById('btn-home').onclick = goHome;
+    document.getElementById('btn-search').onclick = doSearch;
+    searchInput.addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(); });
+    document.getElementById('btn-font-increase').onclick = () => changeFont(2);
+    document.getElementById('btn-font-decrease').onclick = () => changeFont(-2);
+
+    goHome();
+    buildDocList();
   </script>
 </body>
 </html>
