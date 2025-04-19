@@ -188,13 +188,56 @@
   transform: scale(0.97);
   box-shadow: 0 2px 8px rgba(0,0,0,0.4);
 }
+
+
+/* 📱 Mostrar 3 tarjetas por fila en móviles */
+@media (max-width: 480px) {
+  #docList {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    padding: 0.5rem;
+  }
+  .doc-item {
+    padding: 0.4rem;
+    font-size: 0.75rem;
+  }
+  .doc-title {
+    font-size: 0.75rem;
+  }
+  .doc-icon {
+    font-size: 24px;
+  }
+}
+
+/* 🎨 Borde azul sobrio */
+.doc-item {
+  border: 1px solid #1f334d;
+}
+
+/* 📄 Vista tipo lista */
+.list-view {
+  display: flex !important;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.list-view .doc-item {
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 0.6rem 1rem;
+  gap: 1rem;
+}
+.list-view .doc-icon {
+  font-size: 24px;
+  margin: 0;
+}
 </style>
 </head>
 <body>
 <header>
 <img alt="Banner ANF" id="banner" src="banner.jpg"/>
 <h1>Biblioteca Jurídica</h1>
-<div id="toolbar">
+<div id="toolbar"><button id="btn-toggle-view">🔳/📄</button>
 <button id="btn-home"><i class="fa-solid fa-house"></i></button>
 <input id="search" placeholder="Buscar…"/>
 <button id="btn-search"><i class="fa-solid fa-magnifying-glass"></i></button>
@@ -202,7 +245,7 @@
 <button id="btn-font-increase">A+</button>
 </div>
 </header>
-<div id="docList"></div>
+<div class="grid-view" id="docList"></div>
 <div id="viewer"></div>
 <script>
     const docs = [
