@@ -13,6 +13,9 @@ const FILES_TO_CACHE = [
   '/documento6.html',
   '/documento7.html',
   '/documento8.html',
+  '/documento9.html',
+  '/documento10.html',
+  '/documento11.html'
   '/offline.html' // ← opcional si decides agregarla
 ];
 
